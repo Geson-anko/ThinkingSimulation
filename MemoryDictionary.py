@@ -178,13 +178,13 @@ class MemoryDictionary(nn.Module):
 
         for _ in range(num_steps):
             m_lr = (min_lr + max_lr) / 2
-            out_m_lr = self._calc_sum_softmax(m_lr, A_p, B_p,C_p)
-            if out_m_lr > 1/inv_ct:
-                min_lr = out_m_lr
+            denom = self._calc_sum_softmax(m_lr, A_p, B_p,C_p)
+            if denom > 1/inv_ct:
+                min_lr = m_lr
             else:
-                max_lr = out_m_lr
+                max_lr = m_lr
 
-        return out_m_lr
+        return m_lr
         
 
     def _calc_sum_softmax(self,lr:float, A_p:torch.Tensor,B_p:torch.Tensor,C_p:torch.Tensor) -> float:
@@ -215,13 +215,9 @@ class MemoryDictionary(nn.Module):
 
 if __name__ == '__main__':
     """Debugging code"""
-    mem_dic = MemoryDictionary(100000,64,'cuda',torch.float32)
+    mem_dic = MemoryDictionary(10,16,'cuda',torch.float32)
     src_idx = 0
     tgt_idx = 4
-    indices = torch.randint(0,100,(10,))
-    out = mem_dic.trace(indices)
-    print(out.shape)
-
     # before update
     out0 = mem_dic[src_idx]
     print(out0)
