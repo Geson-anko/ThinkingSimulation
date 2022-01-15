@@ -148,7 +148,7 @@ class MemoryDictionary(nn.Module):
         connection_threshold付近をモデルが出力するようにするための学習率を計算します。
         Calculate the learning rate to get the model to output around connection_threshold.
         """
-        A,B,C = g.mm(H), g.mm(U) + v.mm(H), v.mm(U)
+        A,B,C = g.matmul(H), g.matmul(U) + v.matmul(H), v.matmul(U)
         alpha = (B[tgt_idx] / (2 * A[tgt_idx])).item()
         if A[tgt_idx] < 0 and alpha < self.max_lr and 0 < alpha:
             max_lr = alpha
@@ -216,5 +216,13 @@ if __name__ == '__main__':
     mem_dic = MemoryDictionary(10,16)
     src_idx = 0
     tgt_idx = 4
+
     # before update
+    out0 = mem_dic[src_idx]
+    print(out0)
+    #after update
+    mem_dic.connect(src_idx,tgt_idx)
+    out1 = mem_dic[src_idx]
+    print(out1)
+
     
