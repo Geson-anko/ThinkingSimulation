@@ -182,7 +182,7 @@ class MemoryDictionary(nn.Module):
         for _ in range(num_steps):
             m_lr = (min_lr + max_lr) / 2
             denom = self._calc_sum_softmax(m_lr, A_p, B_p,C_p)
-            if denom > 1/inv_ct:
+            if denom > inv_ct:
                 min_lr = m_lr
             else:
                 max_lr = m_lr
