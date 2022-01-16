@@ -6,7 +6,6 @@ This is a implementation class of "Memory Dictionary".
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
 from typing import *
 
 class MemoryDictionary(nn.Module):
@@ -21,9 +20,13 @@ class MemoryDictionary(nn.Module):
                 connection_margin:float = 0.1, max_lr:float = 10.0, num_search:int = 10) -> None:
         """
         初期重みを生成します。初期重みは恒等写像にするために
-        V.T = Uという関係があります。
+        weight1.T = weight2という関係があります。
             D(M) = M
-
+        
+        Generate initial weights.
+        The initial weights are always initialized with the relation 
+            weight1.T = weight2 
+        to make it an indentical mapping. 
 
         """
         super().__init__()
