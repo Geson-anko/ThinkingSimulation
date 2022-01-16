@@ -92,7 +92,7 @@ class MemoryDictionary(nn.Module):
         return result
             
     def trace_a_memory(self, idx:int) -> int:
-        assert 0 <= idx <= self.num_memory
+        assert 0 <= idx < self.num_memory
         out = self.forward(idx).view(-1)
         out_idx = torch.argmax(out,dim=0).item()
         return out_idx
