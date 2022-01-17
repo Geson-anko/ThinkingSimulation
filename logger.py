@@ -2,7 +2,7 @@
 Logging tools
 
 Usage:
->>> from logging import *
+>>> from logger import *
 >>> setLogger(__name__, DEBUG, INFO, or logging.WARNING) 
 >>> error("some error occured.")
 """
