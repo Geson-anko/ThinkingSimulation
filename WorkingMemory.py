@@ -10,6 +10,12 @@ The Implementation class of "Working Memory".
     Working Memory is a finite set with a maximum number of elements α that holds memories temporarily as an
     element. If the elements are added when the number of elements in W is α, the elements in W are randomly chosen
     and overwritten
+
+Usage
+>>> wm = WorkingMemory(10, np.int64)
+>>> wm.add([1,2,3,4])
+>>> pairs = wm.create_pairs()
+>>> wm.load_memories(previous_memories)
 """
 import torch
 import numpy as np
