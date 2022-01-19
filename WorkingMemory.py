@@ -122,10 +122,20 @@ class WorkingMemory:
         self.memories = memories.astype(self.id_type)
         info("loaded memories")
 
+    def __str__(self):
+        return f"Working Memory\nid_type: {self.id_type}\nmax_length: {self.max_length}\ncontaining: {self.memories}"
+
+    def clear(self):
+        self.memories = np.empty((0,),dtype=self.id_type)
+
+
 def test():
     id_type = np.longlong
     wm = WorkingMemory(8,id_type)
+    debug(wm)
     info("contructor OK")
+    
+    # adding check
     addes = [
         [0,1,2,3,4],
         6,
@@ -145,12 +155,14 @@ def test():
     wm.add(dups,is_duplicated=True)
     debug(f"add duplication {dups}, memories are {wm.memories}")
     
+    # pairs check
     pairs= wm.create_pairs()
     debug("pairs are {}".format(pairs))
     pairs = wm.create_pairs(True)
     debug("duplicated pairs are {}".format(pairs))
     info("Create pair OK")
 
+    # load memories check
     memories = np.arange(10,dtype=id_type)
     try:
         wm.load_memories(memories)
