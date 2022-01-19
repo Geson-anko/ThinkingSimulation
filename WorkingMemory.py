@@ -63,20 +63,22 @@ class WorkingMemory:
 
         # concatenation
         idxes = np.searchsorted(input_memories,self.memories)
-        n_exist = np.logical_not(input_memories[idxes] == input_memories)
+        n_exist = input_memories[idxes] != self.memories
         mem = self.memories[n_exist]
         np.random.shuffle(mem)
         cut_len = self.max_length - len(input_memories)
-        self.memories = np.concatenate([input_memories,mem[:cut_len]],axis=0)
+        self.memories = np.concatenate([input_memories,mem[:cut_len]])
 
     def _type_check(self,input_memories) -> np.ndarray:
         t = type(input_memories)
         if t is list:
             input_memories = np.array(input_memories,self.id_type)
         elif t is int:
-            input_memories = np.array([t],self.id_type)
+            input_memories = np.array([input_memories],self.id_type)
         elif t is torch.Tensor:
             input_memories = input_memories.detach().cpu().numpy()
+        elif t is np.ndarray:
+            pass
         else:
             raise ValueError("Unknow id data type! {}".format(t))
         
@@ -119,3 +121,53 @@ class WorkingMemory:
             warning("loading memories dtype: {} is not self.id_type: {}! ".format(dt,self.id_type))
         self.memories = memories.astype(self.id_type)
         info("loaded memories")
+
+def test():
+    id_type = np.longlong
+    wm = WorkingMemory(8,id_type)
+    info("contructor OK")
+    addes = [
+        [0,1,2,3,4],
+        6,
+        np.arange(7,10),
+        torch.arange(10,15),
+    ]
+    for i, m in enumerate(addes):
+        wm.add(m)
+        debug(f"add {m}, memories are {wm.memories}")
+    info("normal type addtion OK")
+
+    un_sorted = [16,15,19,17,18]
+    wm.add(un_sorted,is_sorted=False)
+    debug(f"add unsorted {un_sorted}, memories are {wm.memories}")
+    
+    dups = [20,20,21,22,23]
+    wm.add(dups,is_duplicated=True)
+    debug(f"add duplication {dups}, memories are {wm.memories}")
+    
+    pairs= wm.create_pairs()
+    debug("pairs are {}".format(pairs))
+    pairs = wm.create_pairs(True)
+    debug("duplicated pairs are {}".format(pairs))
+    info("Create pair OK")
+
+    memories = np.arange(10,dtype=id_type)
+    try:
+        wm.load_memories(memories)
+        error("assertion in load_memories is not working")
+    except AssertionError:
+        info("assertion in load_memories is working")
+    memories = np.arange(5,dtype=id_type)
+    wm.load_memories(memories)
+    if not (wm.memories == memories).any():
+        error("loading memories is faild. wm.memories: {}, memories: {}".format(wm.memories,memories))
+    else:
+        info("load_memories OK")
+    warning("Did a warning appear below? ↓")
+    wm.load_memories(memories.astype(int))
+
+
+if __name__ == "__main__":
+    test()
+
+
