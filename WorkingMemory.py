@@ -58,6 +58,7 @@ class WorkingMemory:
         If input_memories is not sorted in ascending order, please set is_sorted=False
         If there are duplicate memory IDs in input_memories, please set is_duplicated=True
         """
+        assert len(input_memories) <= self.max_length
         
         input_memories = self._type_check(input_memories)
 
