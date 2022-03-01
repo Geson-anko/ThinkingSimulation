@@ -95,7 +95,7 @@ class _memory_dictionary(nn.Module, metaclass=ABCMeta):
     @abstractmethod
     def __init__(
         self, num_memory:int, num_dims:int, *,
-        device:torch.device("cpu"), dtype=torch.float
+        device:torch.device=None, dtype:torch.float=None
         ) -> None:
         super().__init__()
         self.num_memory = num_memory
