@@ -60,7 +60,8 @@ class WorkingMemory:
         """
         
         input_memories = self._type_check(input_memories)
-
+        assert len(input_memories) <= self.max_length
+        
         # fix duplication and sort.
         if is_duplicated:
             input_memories = np.unique(input_memories)
@@ -69,6 +70,7 @@ class WorkingMemory:
 
         # concatenation
         idxes = np.searchsorted(input_memories,self.memories)
+        idxes[idxes >= len(input_memories)] = -1
         n_exist = input_memories[idxes] != self.memories
         mem = self.memories[n_exist]
         np.random.shuffle(mem)
@@ -143,8 +145,8 @@ def test():
     
     # adding check
     addes = [
-        [0,1,2,3,4],
         6,
+        [0,1,2,3,4],
         np.arange(7,10),
         torch.arange(10,15),
     ]
