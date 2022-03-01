@@ -11,6 +11,8 @@ This class is a abstract class of Memory Dictionary.
 
 - add_memories(self, num:int) -> None:
 
+- get_memory_vector(self, src_ids:torch.Tensor) -> None:
+
 """
 USAGE = """\
 記憶辞書の使い方
@@ -79,3 +81,68 @@ USAGE = """\
     src_idsの中のidそれぞれに対して記憶ベクトルを取得します。
     return valueは2DのTensorです。
 """
+import torch
+import torch.nn as nn
+from abc import ABCMeta, abstractmethod
+from typing import *
+
+class _memory_dictionary(nn.Module, metaclass=ABCMeta):
+    __doc__ = """\
+        このクラスは記憶辞書の抽象クラスです。
+        {}
+        """.format(USAGE)
+
+    @abstractmethod
+    def __init__(
+        self, num_memory:int, num_dims:int, *,
+        device:torch.device("cpu"), dtype=torch.float
+        ) -> None:
+        super().__init__()
+        self.num_memory = num_memory
+        self.num_dims = num_dims
+
+    @abstractmethod
+    def connect(self, src_ids:torch.Tensor, tgt_ids:Union[List[torch.Tensor], torch.Tensor]) -> None:
+        assert len(src_ids) == len(tgt_ids)
+        return self.format_tgt_ids(tgt_ids)
+        
+    @abstractmethod
+    def trace(self, src_ids:torch.Tensor) -> torch.Tensor:
+        pass
+
+    def trace_each(self, src_ids:torch.Tensor) -> torch.Tensor:
+        result = [self.trace(i.view(1)) for i in src_ids]
+        return result
+    
+    @abstractmethod
+    def add_memories(self,num:int ) -> None:
+        self.num_memory += num
+        
+    @abstractmethod
+    def get_memory_vector(self, src_ids:torch.Tensor) -> torch.Tensor:
+        pass
+
+    def format_tgt_ids(self, tgt_ids:Union[List[torch.Tensor], torch.Tensor]) -> torch.Tensor:
+        t = type(tgt_ids)
+        if t is list:
+            l = len(tgt_ids)
+            result = torch.zeros(l, self.num_memory, dtype=torch.bool)
+            for i,ids in enumerate(tgt_ids):
+                result[i][ids] = True
+
+        elif t is torch.Tensor:
+            dt = tgt_ids.dtype
+            if not dt is torch.bool:
+                raise ValueError(f"Please bool tensor. Input tensor dtype is {dt}")
+            assert tgt_ids.size(1) == self.num_memory
+            
+            result = tgt_ids
+        else:
+            raise ValueError(f"Please list of ids or torch.Tensor, Unknow input type: {t}.")
+
+        
+        return result
+
+
+
+
