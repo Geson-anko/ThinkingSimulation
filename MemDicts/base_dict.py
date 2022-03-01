@@ -51,7 +51,7 @@ USAGE = """\
             torch.Size([len(src_ids), num_memory])
             >>> src_ids = [1,2] # num_memory=5
             >>> tgt_ids = [ # 上記と同じ
-                [True,True,True,True,True]
+                [True,True,True,True,True],
                 [True,False,True,True,False]
             ]
 
