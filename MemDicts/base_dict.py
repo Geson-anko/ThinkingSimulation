@@ -4,16 +4,21 @@ This class is a abstract class of Memory Dictionary.
 記憶辞書を実装するときは、次のメソッドを必ず実装してください。
 
 - __init__(self, num_memory:int, num_dims:int,*, device="cpu", dtype=torch.float) -> None:
+    この中で記憶ベクトルやインデクスを用意してください。
 
 - connect(self, src_ids:torch.Tensor, tgt_ids:List[torch.Tensor]) -> None:
+    この中に記憶辞書の更新処理を書いてください。
 
 - trace(self, src_ids:torch.Tensor) -> torch.Tensor:
+    この中に記憶辞書の参照処理を書いてください。
 
 - add_memories(self, num:int) -> None:
+    記憶ベクトルの追加処理を書いてください
 
 - get_memory_vector(self, src_ids:torch.Tensor) -> None:
-
+    記憶ベクトルの取得処理を書いてください。
 """
+
 USAGE = """\
 記憶辞書の使い方
 0. 形式
