@@ -1,22 +1,30 @@
 __doc__ = """\
+- 目的
+記憶辞書に必須のインターフェイスを備えたクラスを作ることが目的です、
 This class is a abstract class of Memory Dictionary.
 記憶辞書を実装するためのいくつかの重要なメソッドが定義されています。
 記憶辞書を実装するときは、次のメソッドを必ず実装してください。
 
-- __init__(self, num_memory:int, num_dims:int,*, device="cpu", dtype=torch.float) -> None:
-    この中で記憶ベクトルやインデクスを用意してください。
+    - __init__(self, num_memory:int, num_dims:int,*, device="cpu", dtype=torch.float) -> None:
+        この中で記憶ベクトルやインデクスを用意します。
+        super().__init__では、num_memoryとnum_dimsをクラス属性に追加しています。
 
-- connect(self, src_ids:torch.Tensor, tgt_ids:List[torch.Tensor]) -> None:
-    この中に記憶辞書の更新処理を書いてください。
+    - connect(self, src_ids:torch.Tensor, tgt_ids:List[torch.Tensor]) -> None:
+        この中に記憶辞書の更新処理を書きます。
+        super() クラスでは基本的なエラーチェックと、tgt_idsを
+        src_idの要素それぞれの、すべての記憶との接続の有無を保持する、
+        len(src_ids) x num_dims の2d bool tensor に変換して返します。
 
-- trace(self, src_ids:torch.Tensor) -> torch.Tensor:
-    この中に記憶辞書の参照処理を書いてください。
+    - trace(self, src_ids:torch.Tensor) -> torch.Tensor:
+        この中に記憶辞書の参照処理を書いてください。
+        super() クラスは何もしません。
 
-- add_memories(self, num:int) -> None:
-    記憶ベクトルの追加処理を書いてください
+    - add_memories(self, num:int) -> None:
+        記憶ベクトルの追加処理を書いてください
+        super() クラスでは, self.num_memory に num を足します。
 
-- get_memory_vector(self, src_ids:torch.Tensor) -> None:
-    記憶ベクトルの取得処理を書いてください。
+    - get_memory_vector(self, src_ids:torch.Tensor) -> None:
+        記憶ベクトルの取得処理を書いてください。
 """
 
 USAGE = """\
