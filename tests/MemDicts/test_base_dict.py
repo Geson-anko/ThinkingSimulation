@@ -32,4 +32,4 @@ def test_format_tgt_ids():
                 [True,False,True,True,False]
             ],dtype=torch.bool)
     output = md.format_tgt_ids(tgt_ids)
-    assert (output == result).any()
+    assert (output == result).all()
