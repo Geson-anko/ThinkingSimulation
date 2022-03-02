@@ -44,6 +44,7 @@ class CosSimMemDict(_memory_dictionary):
         変化するのは、src_idsのベクトルです。
         connect処理は並列に行われます。
         """
+        cons[torch.arange(len(src_ids)),src_ids] = True
         src_vecs = self.weight[src_ids]
         sign = (-1) ** cons.type_as(self.weight)
         grad_vecs = torch.matmul(sign, self.weight) / self.num_memory
@@ -60,7 +61,7 @@ class CosSimMemDict(_memory_dictionary):
         大きいほど取り出されやすくなります。
         そうでない場合は内積がthresholdよりも大きい場合に取り出されます。
         """
-        cons = torch.zeros(self.num_memory, device=bool)
+        cons = torch.zeros(self.num_memory, dtype=bool)
         for i, sid in enumerate(src_ids):
             out = torch.matmul(self.weight, self.weight[sid])
             if self.stocastic:
