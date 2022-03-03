@@ -39,7 +39,7 @@ def random_generate(num_nodes:int, prob:float, directed:bool, sc:str) -> np.ndar
         sc: self_connection の略で、自己結合の有無を決定します。
             "all", "no", "allow" のいずれかです。
     """
-    assert 0.0 < prob < 1.0
+    assert 0.0 <= prob <= 1.0
     if directed:
         adj_mat = generate_directed(num_nodes,prob)
     else:
@@ -119,7 +119,6 @@ if __name__ == "__main__":
         adjacency_mat = random_generate(num_nodes, p, directed, self_connection)
         pairs = adjac2pairs(adjacency_mat)
         G = pairs2graph(pairs, directed, num_nodes=num_nodes)
-        print(G.edges)
         save_graph(G,plots2d_path)
         np.save(ajace_mat_path,adjacency_mat)
 
