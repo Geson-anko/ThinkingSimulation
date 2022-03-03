@@ -4,7 +4,7 @@
 
 Usage:
     settingファイルを作成し、ターミナルから次のコマンドを実行してください。
-    $ python random_graph.py path/to/settings.json
+    $ python random_graph.py --setting_file=path/to/settings.json
 
 settingの形式:
     JSON形式で記述してください。記述例は次のファイルを参照してください。
@@ -26,6 +26,8 @@ settingの形式:
 """
 import numpy as np
 from graph_tools.constants import SC
+from graph_tools.convertion import adjac2pairs,pairs2graph
+from graph_tools.io import save_graph
 
 def random_generate(num_nodes:int, prob:float, directed:bool, sc:str) -> np.ndarray:
     """
@@ -60,6 +62,7 @@ def generate_directed(num_nodes:int, prob:float) -> np.ndarray:
     """向きのある接続確率probのランダムグラフのadajcency matricを返します。"""
     p,q = prob, 1 - prob
     adj_mat = np.random.choice([True,False],num_nodes**2, replace=True, p=[p,q])
+    adj_mat = adj_mat.reshape(num_nodes,num_nodes)
     return adj_mat
 
 def generate_undirected(num_nodes:int, prob:float) -> np.ndarray:
@@ -81,9 +84,10 @@ if __name__ == "__main__":
     import json
     import os
     from utils import load_setting
+    
     # arguments
     parser = ArgumentParser()
-    parser.add_argument("setting_file",type=str)
+    parser.add_argument("--setting_file",type=str,default="settings/random_graph_example.json")
     args = parser.parse_args()
     
     # load settings
@@ -97,22 +101,28 @@ if __name__ == "__main__":
     out_par_dir = setting.outdir
     suffix = setting.suffix
 
+    # process
     print("Generating random graphs...")
     for i in range(num_graphs):
         p = connection_probs[i]
 
         # output paths
-        out_dir = f"{out_par_dir}/n{num_nodes}_p{p}_di{directed}_sc{self_connection}{suffix}"
+        out_dir = f"{out_par_dir}/n{num_nodes}_p{p}_di{directed}_sc{self_connection}"
+        if suffix:
+            out_dir += suffix
         if not os.path.isdir(out_dir):
             os.makedirs(out_dir)
 
         plots2d_path = f"{out_dir}/2dplots.png"
-        ajace_mat_path = f"{out_dir}/ajacency_mat.npz"
+        ajace_mat_path = f"{out_dir}/ajacency_mat"
 
         adjacency_mat = random_generate(num_nodes, p, directed, self_connection)
         pairs = adjac2pairs(adjacency_mat)
         G = pairs2graph(pairs, directed, num_nodes=num_nodes)
+        print(G.edges)
         save_graph(G,plots2d_path)
-        np.save(adjacency_mat, ajace_mat_path)
+        np.save(ajace_mat_path,adjacency_mat)
+
+    
     print("Finished.")
 
