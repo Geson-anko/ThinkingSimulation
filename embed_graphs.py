@@ -36,6 +36,7 @@ settingの形式:
 """
 import numpy as np
 import torch
+import os
 from utils import load_setting
 from graph_tools.io import get_adjacency_mat_paths, get_graph_names,save_graph
 from graph_tools.convertion import tracedall2adjac, adjac2pairs, pairs2graph
@@ -49,7 +50,7 @@ def main(args):
     # load_settings
     setting = load_setting(args.setting_file)
     num_dims = setting.num_dims
-    graph_dir = setting.graph_dir
+    graph_dir = setting.graphs_dir
     lrs = setting.lrs
     out_dir = setting.out_dir
     dict_type = setting.dict_type
@@ -80,23 +81,23 @@ def main(args):
     
     for i in range(num_roops):
         for j in range(num_graphs):
-            lr = lr[i]
+            lr = lrs[i]
             gn = graph_names[j]
 
             # load adjacency matrix
             adj_mat = np.load(graph_paths[j])
-            adj_mat = torch.from_numpy(adj_mat).to(device)
+            adj_mat_torch = torch.from_numpy(adj_mat).to(device)
             num_nodes = len(adj_mat)
 
             # instance and option str
             if dict_type == DictType.COSSIM:
                 # opt str
-                stc = args.stochastic
+                stc = setting.stochastic
                 if stc:
                     opt_str = f"stc{stc}"
                     thres = 0.0
                 else:
-                    thres = args.threshold
+                    thres = setting.threshold
                     opt_str = f"thres{thres}"
 
                 # instance
@@ -105,7 +106,7 @@ def main(args):
 
             # connect
             src_ids = torch.arange(num_nodes)
-            mem_dict.connect(src_ids,adj_mat)
+            mem_dict.connect(src_ids,adj_mat_torch)
 
             # trace each
             output = mem_dict.trace_each(src_ids)
@@ -115,6 +116,8 @@ def main(args):
 
             # save dir
             save_dir = f"{out_dir}/dt{dict_type}_lr{lr}_{opt_str}/{gn}"
+            if not os.path.isdir(save_dir):
+                os.makedirs(save_dir)
             print("save to",save_dir)
 
             # calc metrics 
@@ -128,7 +131,7 @@ def main(args):
             # save memory vectors
             mp = f"{save_dir}/memory_vectors.pth"
             memory_vectors = mem_dict.get_memory_vector(src_ids)
-            torch.save(memory_vectors,mp.cpu())
+            torch.save(memory_vectors.cpu(),mp)
 
             # 3D embedding
             writer = SummaryWriter(save_dir)
@@ -150,7 +153,7 @@ if __name__ == "__main__":
     
     # arguments
     parser = ArgumentParser()
-    parser.add_argument("--setting_file",type=str,default="settings/cossim_example.json")
+    parser.add_argument("--setting_file",type=str,default="settings/cossim_small.json")
     parser.add_argument("--num_gpus",type=int,default=0)
     args = parser.parse_args()
     main(args)
