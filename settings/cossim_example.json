@@ -4,7 +4,7 @@
     "lrs":[
         0.125, 0.25, 0.5, 1, 2, 4, 8, 16
     ],
-    "our_dir": "Embedded",
+    "out_dir": "Embedded",
     "dict_type":"cossim",
 
     "stochastic": true,
