@@ -39,7 +39,7 @@ import torch
 from utils import load_setting
 from graph_tools.io import get_adjacency_mat_paths, get_graph_names,save_graph
 from graph_tools.convertion import tracedall2adjac, adjac2pairs, pairs2graph
-from metrics import accuracy, extra, shortage
+from graph_tools.metrics import accuracy, extra, shortage
 from torch.utils.tensorboard import SummaryWriter
 
 class DictType:
