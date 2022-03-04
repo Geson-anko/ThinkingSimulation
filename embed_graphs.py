@@ -38,7 +38,7 @@ import numpy as np
 import torch
 from utils import load_setting
 from graph_tools.io import get_adjacency_mat_paths, get_graph_names,save_graph
-from graph_tools.convertion import tgt2adjac, adjac2pairs, pairs2graph
+from graph_tools.convertion import tracedall2adjac, adjac2pairs, pairs2graph
 from metrics import accuracy, extra, shortage
 from torch.utils.tensorboard import SummaryWriter
 
@@ -111,7 +111,7 @@ def main(args):
             output = mem_dict.trace_each(src_ids)
 
             # to adjacency matrix
-            rec_adj_mat = tgt2adjac(output)
+            rec_adj_mat = tracedall2adjac(output)
 
             # save dir
             save_dir = f"{out_dir}/dt{dict_type}_lr{lr}_{opt_str}/{gn}"
