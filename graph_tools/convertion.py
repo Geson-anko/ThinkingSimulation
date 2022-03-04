@@ -25,7 +25,7 @@ def tracedall2adjac(tracedall:list[list[int]]) -> np.ndarray:
     """記憶辞書のすべての記憶をそれぞれtraceした結果を、adjacency matrixに変換します。"""
     num_nodes = len(tracedall)
     adj = np.zeros((num_nodes,num_nodes),dtype=bool)
-    for i in tracedall:
-        adj[i] = True
+    for i,t in enumerate(tracedall):
+        adj[i][t] = True
     
     return adj

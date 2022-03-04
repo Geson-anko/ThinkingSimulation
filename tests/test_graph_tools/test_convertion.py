@@ -9,8 +9,8 @@ def test_adjac2pairs():
 
 
 def test_tracedall2adjac():
-    tracedall = [[0,1],[0,1]]
-    expect = np.array([[True,True],[True,True]])
+    tracedall = [[0,1],[0]]
+    expect = np.array([[True,True],[True,False]])
     out = tracedall2adjac(tracedall)
     assert (out == expect).all()
     assert out.shape == expect.shape
