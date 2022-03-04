@@ -1,0 +1,11 @@
+{
+    "num_nodes":16,
+    "connection_probs":[
+        0.8, 
+        0.5,  0.2
+    ],
+    "directed":false,
+    "self_connection":"all",
+    "outdir":"graphs/small",
+    "suffix":null
+}
