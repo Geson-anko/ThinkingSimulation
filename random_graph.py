@@ -114,7 +114,7 @@ if __name__ == "__main__":
             os.makedirs(out_dir)
 
         plots2d_path = f"{out_dir}/2dplots.png"
-        ajace_mat_path = f"{out_dir}/ajacency_mat"
+        ajace_mat_path = f"{out_dir}/adjacency_mat"
 
         adjacency_mat = random_generate(num_nodes, p, directed, self_connection)
         pairs = adjac2pairs(adjacency_mat)
