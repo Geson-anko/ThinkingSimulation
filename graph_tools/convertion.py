@@ -20,3 +20,12 @@ def pairs2graph(pairs:list[tuple[int,int]], directed:bool, num_nodes:int=None):
     G.add_edges_from(pairs)
     
     return G
+
+def tracedall2adjac(tracedall:list[list[int]]) -> np.ndarray:
+    """記憶辞書のすべての記憶をそれぞれtraceした結果を、adjacency matrixに変換します。"""
+    num_nodes = len(tracedall)
+    adj = np.zeros(num_nodes)
+    for i in tracedall:
+        adj[i] = True
+    
+    return adj
