@@ -15,3 +15,9 @@ def get_adjacency_mat_paths(graph_dir:str) -> list[str]:
     """
     path_param = f"{graph_dir}/**/adjacency_mat.npy"
     return glob.glob(path_param)
+
+def get_graph_names(graph_paths:list[str]) -> str:
+    """adjacency matrixを保存しているファイルの親ディレクトリ名を取得します。"""
+    result = [os.path.basename(os.path.dirname(i)) for i in graph_paths]
+    return result
+    
