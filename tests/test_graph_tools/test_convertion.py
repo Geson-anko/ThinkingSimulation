@@ -13,3 +13,4 @@ def test_tracedall2adjac():
     expect = np.array([[True,True],[True,True]])
     out = tracedall2adjac(tracedall)
     assert (out == expect).all()
+    assert out.shape == expect.shape
