@@ -44,10 +44,12 @@ class CosSimMemDict(_memory_dictionary):
         変化するのは、src_idsのベクトルです。
         connect処理は並列に行われます。
         """
-        cons[torch.arange(len(src_ids)),src_ids] = True
+        indices = torch.arange(len(src_ids))
+        cons[indices,src_ids] = True
         src_vecs = self.weight[src_ids]
         sign = (-1) ** cons.type_as(self.weight)
         grad_vecs = torch.matmul(sign, self.weight) / self.num_memory
+        grad_vecs[indices,src_ids] = 0.0 # ignore update self
         updated = src_vecs - self.lr * grad_vecs
         updated = updated / torch.linalg.norm(updated,dim=1, keepdim=True)
         self.weight.data[src_ids] = updated
