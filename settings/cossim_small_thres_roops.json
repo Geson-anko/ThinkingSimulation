@@ -1,0 +1,13 @@
+{
+    "num_dims":32,
+    "graphs_dir":"graphs/small",
+    "lrs":[
+        0.125,0.5,1.0,2.0,4.0,8.0,16
+    ],
+    "out_dir": "Embedded/roops",
+    "dict_type":"cossim",
+
+    "stochastic": false,
+    "threshold": 0.5,
+    "update_times":20
+}
