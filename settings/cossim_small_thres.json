@@ -1,0 +1,12 @@
+{
+    "num_dims":32,
+    "graphs_dir":"graphs/small",
+    "lrs":[
+        0.125,0.5,1.0
+    ],
+    "out_dir": "Embedded/5roops",
+    "dict_type":"cossim",
+
+    "stochastic": false,
+    "threshold": 0.5
+}
