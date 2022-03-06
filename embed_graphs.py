@@ -25,13 +25,14 @@ settingの形式:
             adjacency_matrixの数 x len(lrs)の数の結果が出力されます。
         out_dir: str 結果を保存するディレクトリです。
         dict_type: str 使用する辞書の型です。
+        update_times: int   辞書を更新する回数です。
 
         辞書のインスタンス時に必要なオプションの設定も書いてください。
         Ex.
             stochastic: bool CosSimMemDictを使用する際のオプションです。
 
         結果は次のような形式でフォルダに保存されます。
-            {our_dir}/dt{dict_type}_lr{lr} + 辞書の形式ごとのオプション/
+            {our_dir}/dt{dict_type}_lr{lr}_ut{update_times} + 辞書の形式ごとのオプション/
                 adjacency_matの親ディレクトリ名/params.pth ...
 """
 import numpy as np
@@ -54,6 +55,12 @@ def main(args):
     lrs = setting.lrs
     out_dir = setting.out_dir
     dict_type = setting.dict_type
+
+    # optional
+    if hasattr(setting,"update_times"):
+        update_times = setting.update_times
+    else:
+        update_times = 1
 
     graph_paths = get_adjacency_mat_paths(graph_dir)
     graph_names = get_graph_names(graph_paths)
@@ -106,7 +113,8 @@ def main(args):
 
             # connect
             src_ids = torch.arange(num_nodes)
-            mem_dict.connect(src_ids,adj_mat_torch)
+            for _ in range(update_times):
+                mem_dict.connect(src_ids,adj_mat_torch)
 
             # trace each
             output = mem_dict.trace_each(src_ids)
@@ -115,7 +123,7 @@ def main(args):
             rec_adj_mat = tracedall2adjac(output)
 
             # save dir
-            save_dir = f"{out_dir}/dt{dict_type}_lr{lr}_{opt_str}/{gn}"
+            save_dir = f"{out_dir}/dt{dict_type}_lr{lr}_{opt_str}_ut{update_times}/{gn}"
             if not os.path.isdir(save_dir):
                 os.makedirs(save_dir)
             print("save to",save_dir)
